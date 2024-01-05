@@ -26,4 +26,4 @@ inputs:
   exclude_folders:
     description: 'Folders to exclude from formatting check'
     required: false
-    default: '3rdparty,3rd_party'
+    default: ''

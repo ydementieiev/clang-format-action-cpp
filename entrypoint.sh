@@ -36,6 +36,12 @@ find_and_check_files() {
     while IFS= read -r -d '' file; do
         format_diff "$file"
     done < <(find "$include_paths" "${exclude_paths[@]/#/-path }" -prune -o -name '*.h' -print0 -o -name '*.cpp' -print0)
+    local find_status=$?
+
+    if [[ "${find_status}" -ne 0 ]]; then
+        echo "Find command failed with status ${find_status}"
+        exit_code=1  # Indicate that an issue was found
+    fi
 }
 
 # Main execution
