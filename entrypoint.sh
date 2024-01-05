@@ -1,28 +1,62 @@
 #!/usr/bin/env bash
 
-format_diff(){
-    local filepath="$1"
-    local_format="$(/usr/bin/clang-format-10 -n --Werror --style=file --fallback-style=LLVM "${filepath}")"
-    local format_status="$?"
-    if [[ "${format_status}" -ne 0 ]]; then
-        echo "$local_format" >&2
-        exit_code=1
-        return "${format_status}"
+# Function to check if clang-format is installed
+check_clang_format() {
+    if ! command -v /usr/bin/clang-format-11 &> /dev/null; then
+        echo "clang-format-11 not found, please install it."
+        exit 3
     fi
-    return 0
 }
 
-cd "$GITHUB_WORKSPACE" || exit 2
+# Function to format a file and check for differences
+format_diff() {
+    local filepath="$1"
+    local format_output
 
-# initialize exit code
-exit_code=0
+    format_output=$(/usr/bin/clang-format-11 -n --Werror --style=file --fallback-style=LLVM "${filepath}" 2>&1)
+    local format_status=$?
 
-# Find files
-FILES=$(find src -path src/out -prune -o -path src/utils -prune -o -name \*.h -print -o -name \*.cpp  -print)
+    if [[ "${format_status}" -ne 0 ]]; then
+        echo "Formatting issue found in ${filepath}:"
+        echo "${format_output}"
+        exit_code=1  # Indicate that an issue was found
+    fi
+}
 
-# Сheck style in files
-for FILE in $FILES; do
-    format_diff "${FILE}"
-done
+# Function to parse and set include and exclude paths
+set_paths() {
+    include_paths="${INPUT_INCLUDE_FOLDERS:-.}"
+    local exclude_paths_string="${INPUT_EXCLUDE_FOLDERS:-3rdparty,3rd_party}"
 
-exit "$exit_code"
+    IFS=',' read -r -a exclude_paths <<< "$exclude_paths_string"
+}
+
+# Function to find and check files
+find_and_check_files() {
+    while IFS= read -r -d '' file; do
+        format_diff "$file"
+    done < <(find "$include_paths" "${exclude_paths[@]/#/-path }" -prune -o -name '*.h' -print0 -o -name '*.cpp' -print0)
+}
+
+# Main execution
+main() {
+    check_clang_format
+
+    set_paths
+
+    # Ensure the script is running in the GitHub workspace
+    if ! cd "$GITHUB_WORKSPACE"; then
+        echo "Failed to enter $GITHUB_WORKSPACE"
+        exit 2
+    fi
+
+    # Initialize exit code
+    exit_code=0
+
+    find_and_check_files
+
+    # Exit with the determined status
+    exit "$exit_code"
+}
+
+main "$@"

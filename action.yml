@@ -1,10 +1,29 @@
 name: "clang-format Check"
-description: "Use clang-format to see if your C code is formatted according to project guidelines."
+description: "This action uses clang-format to check if your C/C++ code is formatted according to the project's guidelines. Ensure your project has a .clang-format file for custom rules."
 
+# Branding helps to identify your action in the marketplace
 branding:
-  icon: "check-circle"
-  color: "blue"
+  icon: "check-circle"  # Icon displayed next to your action
+  color: "blue"         # Color theme for the action
 
+# The 'runs' section defines how your action is executed
 runs:
   using: "docker"
-  image: "Dockerfile"
+  image: "Dockerfile"  # Specify the Dockerfile
+
+# Inputs allow users to customize the behavior of your action
+inputs:
+  style-guide:
+    description: "Path to the clang-format style guide file. Adjust if your style guide file is located elsewhere."
+    required: false
+    default: ".clang-format"  # Default to the project's root
+
+  include_folders:
+    description: 'Folders to include for formatting check'
+    required: false
+    default: '.'
+
+  exclude_folders:
+    description: 'Folders to exclude from formatting check'
+    required: false
+    default: '3rdparty,3rd_party'
