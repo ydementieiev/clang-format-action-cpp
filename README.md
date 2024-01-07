@@ -19,17 +19,18 @@ jobs:
     - name: Run clang-format style check for Cpp programs.
       uses: ydementieiev/clang-format-action-cpp@master
       with:
-        include_folders: 'src,include'
-        exclude_folders: 'src/3rdparty,src/external'
+        include_folders: 'src,include'               # Optional.
+        exclude_folders: 'src/3rdparty,src/external' # Optional.
+        style_guide: 'some_folder/.clang-format'     # Optional.
 ```
 
-This configuration will trigger the clang-format check on every push to the repository. It will check files in the `src` and `include` directories, while excluding any files found in `src/3rdparty` and `src/external` by default. But you can customize folders as described below.
+This configuration will trigger the clang-format check on every push to the repository. It will check files in the `include_folders` directories, while excluding any files found in `exclude_folders`. But you can customize folders as described below.
 
 ### Inputs
 
-- `include_folders`: Comma-separated list of folders to include in the formatting check. Default is `'src,include'`.
-- `exclude_folders`: Comma-separated list of folders to exclude from the formatting check. Default is `'src/3rdparty,src/external'`.
-- `style-guide`: Path to the clang-format style guide file. Adjust if your style guide file is located elsewhere. It's not required and defaults to `.clang-format` at the project's root.
+- `include_folders`: Comma-separated list of folders to include in the formatting check. It's not required and default is `'./'`.
+- `exclude_folders`: Comma-separated list of folders to exclude from the formatting check. It's not required and default is `''`.
+- `style_guide`: Path to the clang-format style guide file. Adjust if your style guide file is located elsewhere. It's not required and defaults to `.clang-format` at the project's root.
 
 ## Contributing
 

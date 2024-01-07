@@ -13,7 +13,7 @@ runs:
 
 # Inputs allow users to customize the behavior of your action
 inputs:
-  style-guide:
+  style_guide:
     description: "Path to the clang-format style guide file. Adjust if your style guide file is located elsewhere."
     required: false
     default: ".clang-format"  # Default to the project's root
