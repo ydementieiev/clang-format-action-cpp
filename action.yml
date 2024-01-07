@@ -1,5 +1,5 @@
-name: "clang-format Check"
-description: "This action uses clang-format to check if your C/C++ code is formatted according to the project's guidelines. Ensure your project has a .clang-format file for custom rules."
+name: "Clang-Format Code Style Action for C++"
+description: "Checks C/C++ code style with clang-format against project's guidelines. Requires a .clang-format file."
 
 # Branding helps to identify your action in the marketplace
 branding:
