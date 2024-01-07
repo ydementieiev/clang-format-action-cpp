@@ -105,6 +105,7 @@ if __name__ == "__main__":
         logging.error(f"Failed to enter GITHUB_WORKSPACE: {e}")
         exit(2)
 
+    logging.info(f"Started file checking")
     exit_code = find_and_check_files(include_paths, exclude_paths)
 
     if exit_code == 0:
