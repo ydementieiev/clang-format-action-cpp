@@ -1,5 +1,5 @@
 
-# Clang-Format Action for C++
+# Clang-Format Code Style Action for C++
 
 This GitHub Action applies `clang-format` to check the formatting of your C++ codebase. It's designed to ensure your code adheres to a consistent style by checking it against the formatting rules defined in your `.clang-format` file.
 

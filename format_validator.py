@@ -71,7 +71,7 @@ def find_files(include_paths, exclude_paths):
     files_to_check = []
 
     for path in include_paths:
-        for extension in ["**/*.h", "**/*.cpp"]:
+        for extension in ["**/*.h", "**/*.cpp", "**/*.cxx", "**/*.hpp"]:
             for file in glob.glob(f"{path}/{extension}", recursive=True):
                 if not any(os.path.normpath(exclude) in os.path.normpath(file) for exclude in exclude_paths):
                     files_to_check.append(file)
