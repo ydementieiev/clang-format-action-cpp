@@ -9,7 +9,6 @@ import shutil
 logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
 
 # Global constant for the expected clang-format path (used as a fallback)
-EXPECTED_CLANG_FORMAT_PATH = "C:\\Program Files\\LLVM\\bin\\clang-format.exe"
 actual_clang_format_path = None
 
 
@@ -18,10 +17,10 @@ def check_clang_format():
     global actual_clang_format_path
 
     # Check if clang-format is in system PATH
-    actual_clang_format_path = shutil.which("clang-format-11") or EXPECTED_CLANG_FORMAT_PATH
+    actual_clang_format_path = shutil.which("clang-format-11") or "/usr/bin/clang-format-11"
 
     if os.path.isfile(actual_clang_format_path):
-        logging.info(f"clang-format-11 found at {actual_clang_format_path}.")
+        logging.info(f"clang-format-11 found at {actual_clang_format_path}")
     else:
         logging.error("clang-format-11 not found in the system PATH or the expected path, please install it.")
         exit(3)
@@ -48,10 +47,18 @@ def verify_code_style(filepath):
         return 1
 
 
-def set_paths():
+def get_include_exlude_paths():
     """Parse and set include and exclude paths."""
-    include_paths = [path.strip() for path in os.getenv('INPUT_INCLUDE_FOLDERS', '.').split(',')]
-    exclude_paths = [path.strip() for path in os.getenv('INPUT_EXCLUDE_FOLDERS', '').split(',') if path.strip()]
+    # Get environment variable for include paths or default to '.' if empty/undefined
+    include_paths_env = os.getenv('INPUT_INCLUDE_FOLDERS', '.').strip()
+    include_paths = [os.path.normpath(path.strip()) for path in include_paths_env.split(',')] if include_paths_env else ['.']
+
+    # Get environment variable for exclude paths or default to an empty list if empty/undefined
+    exclude_paths_env = os.getenv('INPUT_EXCLUDE_FOLDERS', '').strip()
+    exclude_paths = [os.path.normpath(path.strip()) for path in exclude_paths_env.split(',')] if exclude_paths_env else []
+
+    # Ensure the current directory is not inadvertently excluded
+    exclude_paths = [path for path in exclude_paths if path != "."]
 
     logging.info(f"Include paths set to: {include_paths}")
     logging.info(f"Exclude paths set to: {exclude_paths}")
@@ -96,7 +103,7 @@ if __name__ == "__main__":
 
     check_clang_format()
 
-    include_paths, exclude_paths = set_paths()
+    include_paths, exclude_paths = get_include_exlude_paths()
 
     try:
         os.chdir(os.getenv('GITHUB_WORKSPACE', '.'))
