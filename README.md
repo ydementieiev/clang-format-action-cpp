@@ -3,6 +3,9 @@
 
 This GitHub Action applies `clang-format` to check the formatting of your C++ codebase. It's designed to ensure your code adheres to a consistent style by checking it against the formatting rules defined in your `.clang-format` file.
 
+This check will be performed on every push, and you can see the results even on your pull requests.
+<img width="450" alt="pr" src="https://github.com/ydementieiev/clang-format-action-cpp/assets/57259850/75ef9afe-4a80-41a5-9dc4-4c75b5fa3760">
+
 ## Usage
 
 To integrate this action into your workflow, add a `.github/workflows/clang-format-check.yml` file to your repository with the following content:
